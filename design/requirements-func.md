@@ -7,7 +7,7 @@
 
     1. 获取CANN下所有组件，对外（面向外部开发者）提供的API均存放在指定的管控目录中，这个管控目录由配置文件（inc-pkg-conf.csv）管理。
     2. 过滤*/experimental/*目录下所有文件，不参与分析。
-    3. 过滤*/tests/*、*/build/*、*/output/*、*/stub/*等目录下所有文件，不参与分析。
+    3. 过滤*/tests/*、*/build/*、*/output/*、*/stub/*、*/examples/*等目录下所有文件，不参与分析。
 
 # requirements
 
@@ -20,7 +20,7 @@
     
     需要解析的文件清单包括：
     1. 组件指定目录下的所有源文件（基于inc-pkg-conf.csv配置过滤），源语言范围：C（.h）、C++（.h/.hpp/.cpp/.cxx/.cc 等）、Python（.py）。
-    2. 组件内，指定目录外的全量头文件，源语言范围：C（.h）、C++（.h/.hpp）、Python（.py）。
+    2. 组件内，指定目录外的全量头文件，源语言范围：C（.h）、C++（.h/.hpp）。
 
 
     源码文件可见性：
@@ -38,6 +38,13 @@
 
 ## AR3 遍历组件file-list.csv清单、通过静态语法树解析获取全量的API、宏、数据结构、Union、enum等声明清单
 
+### 开关条件
+    1. 增加full-data-type变量开关，支持用户启动本项目时输入开关的值
+    2. full-data-type开关默认值为false。
+    3. 当full-data-type关闭（false）时，遍历源文件，只获取全量API声明 + 仅在inc-pkg-conf.csv管控目录下源文件中定义的宏、数据结构、Union、enum声明。
+    4. 当full-data-type打开（true）时，遍历源文件，获取全量API、宏、数据结构、Union、enum声明。
+
+### 遍历文件，静态语法树解析输出约束
     API声明清单输出到func-export.json文件中，API声明包括：
     1. FunctionDecl（C函数、全局函数、模版函数）
     2. CXXMethodDecl（类成员函数）
